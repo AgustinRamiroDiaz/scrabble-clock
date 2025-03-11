@@ -93,8 +93,6 @@ const handlePlayerClick = (player: number) => {
 
 <template>
   <div class="scrabble-clock">
-    <h1>Scrabble Clock</h1>
-
     <div class="clock-container">
       <div
         class="player-clock player-2"
@@ -133,18 +131,26 @@ const handlePlayerClick = (player: number) => {
 <style scoped>
 .scrabble-clock {
   max-width: 100%;
+  width: 100%;
   height: 100vh;
-  margin: 0 auto;
-  padding: 1rem;
+  margin: 0;
+  padding: 0;
   text-align: center;
   font-family: Arial, sans-serif;
   display: flex;
   flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
 }
 
 h1 {
-  margin-bottom: 1rem;
+  margin: 0.5rem 0;
   color: #2c3e50;
+  font-size: 1.5rem;
 }
 
 .clock-container {
@@ -152,14 +158,15 @@ h1 {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
   flex: 1;
+  width: 100%;
 }
 
 .player-clock {
   width: 100%;
-  padding: 2rem;
-  border-radius: 8px;
+  padding: 1rem;
+  border-radius: 0;
   background-color: #f5f5f5;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -167,6 +174,7 @@ h1 {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin: 0;
 }
 
 /* Player 2 is upside down for face-to-face play */
@@ -189,9 +197,9 @@ h1 {
 }
 
 .time {
-  font-size: 3rem;
+  font-size: 3.5rem;
   font-weight: bold;
-  margin: 1rem 0;
+  margin: 0.5rem 0;
 }
 
 .controls {
@@ -201,6 +209,7 @@ h1 {
   padding: 0.5rem;
   width: 100%;
   z-index: 10;
+  background-color: #f0f0f0;
 }
 
 button {
@@ -231,21 +240,21 @@ button:hover {
 @media (max-height: 600px) {
   .scrabble-clock {
     height: 100vh;
-    padding: 0.5rem;
+    padding: 0;
   }
 
   h1 {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+    margin: 0.25rem 0;
   }
 
   .player-clock {
-    padding: 1rem;
+    padding: 0.5rem;
   }
 
   .time {
     font-size: 2.5rem;
-    margin: 0.5rem 0;
+    margin: 0.25rem 0;
   }
 
   button {
