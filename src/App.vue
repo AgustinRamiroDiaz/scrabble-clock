@@ -203,7 +203,7 @@ h1 {
 
 .player-clock {
   width: 100%;
-  padding: 1rem;
+  padding: 0.5rem 0;
   border-radius: 0;
   background-color: #1e1e1e;
   cursor: pointer;
@@ -241,9 +241,13 @@ h1 {
 }
 
 .time {
-  font-size: 3.5rem;
+  font-size: 8vw;
   font-weight: bold;
-  margin: 0.5rem 0;
+  margin: 0;
+  line-height: 1;
+  width: 100%;
+  text-align: center;
+  letter-spacing: -0.02em;
 }
 
 .controls {
@@ -320,8 +324,7 @@ h2 {
   }
 
   .time {
-    font-size: 2.5rem;
-    margin: 0.25rem 0;
+    font-size: 12vw;
   }
 
   button {
@@ -335,6 +338,25 @@ h2 {
   .pause-icon {
     width: 20px;
     height: 20px;
+  }
+}
+
+/* Additional responsive adjustments for different screen sizes */
+@media (min-height: 601px) and (max-height: 800px) {
+  .time {
+    font-size: 14vw;
+  }
+}
+
+@media (min-height: 801px) {
+  .time {
+    font-size: 16vw;
+  }
+}
+
+@media (orientation: landscape) {
+  .time {
+    font-size: 16vh;
   }
 }
 
