@@ -97,25 +97,7 @@ const handlePlayerClick = (player: number) => {
 
     <div class="clock-container">
       <div
-        class="player-clock"
-        :class="{
-          active: activePlayer === 1,
-          overtime: player1InOvertime,
-        }"
-        @click="handlePlayerClick(1)"
-      >
-        <h2>Player 1</h2>
-        <div class="time">{{ player1DisplayTime }}</div>
-        <div v-if="player1InOvertime" class="overtime-indicator">OVERTIME</div>
-      </div>
-
-      <div class="controls">
-        <button @click="resetTimer">Reset</button>
-        <button v-if="activePlayer !== 0" @click="stopTimer">Pause</button>
-      </div>
-
-      <div
-        class="player-clock"
+        class="player-clock player-2"
         :class="{
           active: activePlayer === 2,
           overtime: player2InOvertime,
@@ -126,44 +108,76 @@ const handlePlayerClick = (player: number) => {
         <div class="time">{{ player2DisplayTime }}</div>
         <div v-if="player2InOvertime" class="overtime-indicator">OVERTIME</div>
       </div>
+
+      <div class="controls">
+        <button @click="resetTimer">Reset</button>
+        <button v-if="activePlayer !== 0" @click="stopTimer">Pause</button>
+      </div>
+
+      <div
+        class="player-clock player-1"
+        :class="{
+          active: activePlayer === 1,
+          overtime: player1InOvertime,
+        }"
+        @click="handlePlayerClick(1)"
+      >
+        <h2>Player 1</h2>
+        <div class="time">{{ player1DisplayTime }}</div>
+        <div v-if="player1InOvertime" class="overtime-indicator">OVERTIME</div>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
 .scrabble-clock {
-  max-width: 800px;
+  max-width: 100%;
+  height: 100vh;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
   text-align: center;
   font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
 }
 
 h1 {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   color: #2c3e50;
 }
 
 .clock-container {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+  flex: 1;
 }
 
 .player-clock {
-  flex: 1;
+  width: 100%;
   padding: 2rem;
   border-radius: 8px;
   background-color: #f5f5f5;
   cursor: pointer;
   transition: all 0.3s ease;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Player 2 is upside down for face-to-face play */
+.player-clock.player-2 {
+  transform: rotate(180deg);
 }
 
 .player-clock.active {
   background-color: #4caf50;
   color: white;
-  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
 }
 
 .player-clock.overtime {
@@ -182,8 +196,11 @@ h1 {
 
 .controls {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   gap: 1rem;
+  padding: 0.5rem;
+  width: 100%;
+  z-index: 10;
 }
 
 button {
@@ -210,18 +227,29 @@ button:hover {
   display: inline-block;
 }
 
-@media (max-width: 768px) {
-  .clock-container {
-    flex-direction: column;
+/* Make sure the app takes full height on mobile */
+@media (max-height: 600px) {
+  .scrabble-clock {
+    height: 100vh;
+    padding: 0.5rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
   }
 
   .player-clock {
-    width: 100%;
+    padding: 1rem;
   }
 
-  .controls {
-    flex-direction: row;
-    margin: 1rem 0;
+  .time {
+    font-size: 2.5rem;
+    margin: 0.5rem 0;
+  }
+
+  button {
+    padding: 0.5rem 1rem;
   }
 }
 </style>
