@@ -145,11 +145,13 @@ const handlePlayerClick = (player: number) => {
   right: 0;
   bottom: 0;
   overflow: hidden;
+  background-color: #121212;
+  color: #e0e0e0;
 }
 
 h1 {
   margin: 0.5rem 0;
-  color: #2c3e50;
+  color: #e0e0e0;
   font-size: 1.5rem;
 }
 
@@ -167,7 +169,7 @@ h1 {
   width: 100%;
   padding: 1rem;
   border-radius: 0;
-  background-color: #f5f5f5;
+  background-color: #1e1e1e;
   cursor: pointer;
   transition: all 0.3s ease;
   flex: 1;
@@ -175,6 +177,7 @@ h1 {
   flex-direction: column;
   justify-content: center;
   margin: 0;
+  color: #e0e0e0;
 }
 
 /* Player 2 is upside down for face-to-face play */
@@ -183,17 +186,17 @@ h1 {
 }
 
 .player-clock.active {
-  background-color: #4caf50;
+  background-color: #2e7d32;
   color: white;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 15px rgba(46, 125, 50, 0.5);
 }
 
 .player-clock.overtime {
-  background-color: #ff9800;
+  background-color: #e65100;
 }
 
 .player-clock.active.overtime {
-  background-color: #f44336;
+  background-color: #c62828;
 }
 
 .time {
@@ -209,14 +212,14 @@ h1 {
   padding: 0.5rem;
   width: 100%;
   z-index: 10;
-  background-color: #f0f0f0;
+  background-color: #212121;
 }
 
 button {
   padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 4px;
-  background-color: #2c3e50;
+  background-color: #424242;
   color: white;
   cursor: pointer;
   font-size: 1rem;
@@ -224,16 +227,21 @@ button {
 }
 
 button:hover {
-  background-color: #1a2530;
+  background-color: #616161;
 }
 
 .overtime-indicator {
   font-weight: bold;
   color: white;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(255, 255, 255, 0.15);
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   display: inline-block;
+}
+
+h2 {
+  color: #e0e0e0;
+  margin: 0.5rem 0;
 }
 
 /* Make sure the app takes full height on mobile */
