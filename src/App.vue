@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import PauseIcon from './components/icons/pause-circle-svgrepo-com.svg'
 
 // Player timer states
 const player1Time = ref(30 * 60) // 30 minutes in seconds
@@ -107,8 +108,10 @@ const handlePlayerClick = (player: number) => {
       </div>
 
       <div class="controls">
-        <button @click="resetTimer">Reset</button>
-        <button v-if="activePlayer !== 0" @click="stopTimer">Pause</button>
+        <button @click="resetTimer" class="reset-btn">Reset</button>
+        <button v-if="activePlayer !== 0" @click="stopTimer" class="pause-btn">
+          <img :src="PauseIcon" alt="Pause" class="pause-icon" />
+        </button>
       </div>
 
       <div
@@ -221,11 +224,29 @@ button {
   color: white;
   cursor: pointer;
   font-size: 1rem;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 button:hover {
   background-color: #616161;
+  transform: scale(1.05);
+}
+
+.reset-btn {
+  padding: 0.75rem 1.5rem;
+}
+
+.pause-btn {
+  padding: 0.75rem;
+  aspect-ratio: 1/1;
+}
+
+.pause-icon {
+  width: 24px;
+  height: 24px;
 }
 
 .overtime-indicator {
@@ -264,7 +285,16 @@ h2 {
   }
 
   button {
+    padding: 0.5rem;
+  }
+
+  .reset-btn {
     padding: 0.5rem 1rem;
+  }
+
+  .pause-icon {
+    width: 20px;
+    height: 20px;
   }
 }
 </style>
