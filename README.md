@@ -1,6 +1,6 @@
 # scrabble-clock
 
-This template should help get you started developing with Vue 3 in Vite.
+Use it at https://agustinramirodiaz.github.io/scrabble-clock/
 
 ## Recommended IDE Setup
 

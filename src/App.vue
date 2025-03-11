@@ -9,6 +9,7 @@ const player1Overtime = ref(8 * 60 * 10) // 8 minutes overtime in tenths of seco
 const player2Overtime = ref(8 * 60 * 10) // 8 minutes overtime in tenths of seconds
 const activePlayer = ref(0) // 0: no active player, 1: player 1, 2: player 2
 const timerInterval = ref<number | null>(null)
+const showResetConfirmation = ref(false) // State for showing reset confirmation popup
 
 // Format time as MM:SS (converting from tenths of seconds)
 const formatTime = (timeInTenthsOfSeconds: number) => {
@@ -69,6 +70,16 @@ const stopTimer = () => {
   activePlayer.value = 0
 }
 
+// Show reset confirmation
+const showResetConfirmationDialog = () => {
+  // Pause the timer while showing confirmation
+  const wasActive = activePlayer.value
+  if (wasActive) {
+    stopTimer()
+  }
+  showResetConfirmation.value = true
+}
+
 // Reset the timer
 const resetTimer = () => {
   stopTimer()
@@ -76,10 +87,19 @@ const resetTimer = () => {
   player2Time.value = 30 * 60 * 10
   player1Overtime.value = 8 * 60 * 10
   player2Overtime.value = 8 * 60 * 10
+  showResetConfirmation.value = false
+}
+
+// Cancel reset
+const cancelReset = () => {
+  showResetConfirmation.value = false
 }
 
 // Handle player button click
 const handlePlayerClick = (player: number) => {
+  // Don't allow player clicks when confirmation is showing
+  if (showResetConfirmation.value) return
+
   if (activePlayer.value === 0) {
     // Start the timer for the clicked player
     startTimer(player)
@@ -101,6 +121,7 @@ const handlePlayerClick = (player: number) => {
         :class="{
           active: activePlayer === 2,
           overtime: player2InOvertime,
+          disabled: showResetConfirmation,
         }"
         @click="handlePlayerClick(2)"
       >
@@ -109,7 +130,7 @@ const handlePlayerClick = (player: number) => {
       </div>
 
       <div class="controls">
-        <button @click="resetTimer" class="reset-btn">Reset</button>
+        <button @click="showResetConfirmationDialog" class="reset-btn">Reset</button>
         <button v-if="activePlayer !== 0" @click="stopTimer" class="pause-btn">
           <img :src="PauseIcon" alt="Pause" class="pause-icon" />
         </button>
@@ -120,11 +141,24 @@ const handlePlayerClick = (player: number) => {
         :class="{
           active: activePlayer === 1,
           overtime: player1InOvertime,
+          disabled: showResetConfirmation,
         }"
         @click="handlePlayerClick(1)"
       >
         <div class="time">{{ player1DisplayTime }}</div>
         <div v-if="player1InOvertime" class="overtime-indicator">OVERTIME</div>
+      </div>
+    </div>
+
+    <!-- Reset Confirmation Modal -->
+    <div v-if="showResetConfirmation" class="modal-overlay">
+      <div class="modal-content">
+        <h2>Reset Timer?</h2>
+        <p>Are you sure you want to reset the timer?</p>
+        <div class="modal-buttons">
+          <button @click="cancelReset" class="cancel-btn">Cancel</button>
+          <button @click="resetTimer" class="confirm-btn">Reset</button>
+        </div>
       </div>
     </div>
   </div>
@@ -199,6 +233,11 @@ h1 {
 
 .player-clock.active.overtime {
   background-color: #c62828;
+}
+
+.player-clock.disabled {
+  pointer-events: none;
+  opacity: 0.7;
 }
 
 .time {
@@ -297,5 +336,51 @@ h2 {
     width: 20px;
     height: 20px;
   }
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.modal-content {
+  background-color: #212121;
+  padding: 1.5rem;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 400px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  color: #e0e0e0;
+}
+
+.modal-content p {
+  margin-bottom: 1.5rem;
+  color: #e0e0e0;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.cancel-btn {
+  background-color: #424242;
+}
+
+.confirm-btn {
+  background-color: #c62828;
 }
 </style>
