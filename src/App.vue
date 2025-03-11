@@ -2,18 +2,19 @@
 import { ref, computed } from 'vue'
 import PauseIcon from './components/icons/pause-circle-svgrepo-com.svg'
 
-// Player timer states
-const player1Time = ref(30 * 60) // 30 minutes in seconds
-const player2Time = ref(30 * 60) // 30 minutes in seconds
-const player1Overtime = ref(8 * 60) // 8 minutes overtime in seconds
-const player2Overtime = ref(8 * 60) // 8 minutes overtime in seconds
+// Player timer states (now in tenths of seconds)
+const player1Time = ref(30 * 60 * 10) // 30 minutes in tenths of seconds
+const player2Time = ref(30 * 60 * 10) // 30 minutes in tenths of seconds
+const player1Overtime = ref(8 * 60 * 10) // 8 minutes overtime in tenths of seconds
+const player2Overtime = ref(8 * 60 * 10) // 8 minutes overtime in tenths of seconds
 const activePlayer = ref(0) // 0: no active player, 1: player 1, 2: player 2
 const timerInterval = ref<number | null>(null)
 
-// Format time as MM:SS
-const formatTime = (timeInSeconds: number) => {
-  const minutes = Math.floor(timeInSeconds / 60)
-  const seconds = timeInSeconds % 60
+// Format time as MM:SS (converting from tenths of seconds)
+const formatTime = (timeInTenthsOfSeconds: number) => {
+  const totalSeconds = Math.floor(timeInTenthsOfSeconds / 10)
+  const minutes = Math.floor(totalSeconds / 60)
+  const seconds = totalSeconds % 60
   return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
 }
 
@@ -56,7 +57,7 @@ const startTimer = (player: number) => {
         stopTimer()
       }
     }
-  }, 1000)
+  }, 100) // Now updating every 100ms (1/10th of a second)
 }
 
 // Stop the timer
@@ -71,10 +72,10 @@ const stopTimer = () => {
 // Reset the timer
 const resetTimer = () => {
   stopTimer()
-  player1Time.value = 30 * 60
-  player2Time.value = 30 * 60
-  player1Overtime.value = 8 * 60
-  player2Overtime.value = 8 * 60
+  player1Time.value = 30 * 60 * 10
+  player2Time.value = 30 * 60 * 10
+  player1Overtime.value = 8 * 60 * 10
+  player2Overtime.value = 8 * 60 * 10
 }
 
 // Handle player button click
