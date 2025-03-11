@@ -102,7 +102,6 @@ const handlePlayerClick = (player: number) => {
         }"
         @click="handlePlayerClick(2)"
       >
-        <h2>Player 2</h2>
         <div class="time">{{ player2DisplayTime }}</div>
         <div v-if="player2InOvertime" class="overtime-indicator">OVERTIME</div>
       </div>
@@ -120,7 +119,6 @@ const handlePlayerClick = (player: number) => {
         }"
         @click="handlePlayerClick(1)"
       >
-        <h2>Player 1</h2>
         <div class="time">{{ player1DisplayTime }}</div>
         <div v-if="player1InOvertime" class="overtime-indicator">OVERTIME</div>
       </div>
