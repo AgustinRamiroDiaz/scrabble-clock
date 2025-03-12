@@ -37,6 +37,30 @@ const player2DisplayTime = computed(() => {
 const player1InOvertime = computed(() => player1Time.value <= 0 && player1Overtime.value > 0)
 const player2InOvertime = computed(() => player2Time.value <= 0 && player2Overtime.value > 0)
 
+// Calculate penalty points based on remaining overtime
+// -10 points per minute of overtime used
+const calculatePenaltyPoints = (overtimeInTenths: number) => {
+  // Total overtime is 8 minutes (480 seconds or 4800 tenths)
+  // Calculate how many full minutes of overtime have been used
+  const totalOvertimeTenths = 8 * 60 * 10
+  const usedOvertimeTenths = totalOvertimeTenths - overtimeInTenths
+  const usedOvertimeMinutes = Math.ceil(usedOvertimeTenths / (60 * 10))
+
+  // Penalty is -10 points per minute used
+  return usedOvertimeMinutes * -10
+}
+
+// Computed properties for penalty points
+const player1PenaltyPoints = computed(() => {
+  if (!player1InOvertime.value) return 0
+  return calculatePenaltyPoints(player1Overtime.value)
+})
+
+const player2PenaltyPoints = computed(() => {
+  if (!player2InOvertime.value) return 0
+  return calculatePenaltyPoints(player2Overtime.value)
+})
+
 // Start the timer for a player
 const startTimer = (player: number) => {
   if (timerInterval.value) {
@@ -158,7 +182,10 @@ const reduceTimeByOneMinute = (player: number, event: Event) => {
         @click="handlePlayerClick(2)"
       >
         <div class="time">{{ player2DisplayTime }}</div>
-        <div v-if="player2InOvertime" class="overtime-indicator">OVERTIME</div>
+        <div v-if="player2InOvertime" class="overtime-container">
+          <span class="overtime-indicator">OVERTIME</span>
+          <span class="penalty-indicator">{{ player2PenaltyPoints }} pts</span>
+        </div>
         <button v-if="isDevelopment" @click="(e) => reduceTimeByOneMinute(2, e)" class="debug-btn">
           -1 min
         </button>
@@ -181,7 +208,10 @@ const reduceTimeByOneMinute = (player: number, event: Event) => {
         @click="handlePlayerClick(1)"
       >
         <div class="time">{{ player1DisplayTime }}</div>
-        <div v-if="player1InOvertime" class="overtime-indicator">OVERTIME</div>
+        <div v-if="player1InOvertime" class="overtime-container">
+          <span class="overtime-indicator">OVERTIME</span>
+          <span class="penalty-indicator">{{ player1PenaltyPoints }} pts</span>
+        </div>
         <button v-if="isDevelopment" @click="(e) => reduceTimeByOneMinute(1, e)" class="debug-btn">
           -1 min
         </button>
@@ -335,6 +365,14 @@ button:hover {
   height: 24px;
 }
 
+.overtime-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0.25rem 0;
+}
+
 .overtime-indicator {
   font-weight: bold;
   color: white;
@@ -342,6 +380,16 @@ button:hover {
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   display: inline-block;
+}
+
+.penalty-indicator {
+  font-weight: bold;
+  color: #ff6b6b;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  display: inline-block;
+  font-size: 0.9rem;
 }
 
 h2 {
