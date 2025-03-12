@@ -12,6 +12,8 @@ const player1Time = ref(30 * 60 * 10) // 30 minutes in tenths of seconds
 const player2Time = ref(30 * 60 * 10) // 30 minutes in tenths of seconds
 const player1Overtime = ref(8 * 60 * 10) // 8 minutes overtime in tenths of seconds
 const player2Overtime = ref(8 * 60 * 10) // 8 minutes overtime in tenths of seconds
+const player1OvertimeExpired = ref(false) // Track if player 1's overtime has expired
+const player2OvertimeExpired = ref(false) // Track if player 2's overtime has expired
 const activePlayer = ref(0) // 0: no active player, 1: player 1, 2: player 2
 const timerInterval = ref<number | null>(null)
 const showResetConfirmation = ref(false) // State for showing reset confirmation popup
@@ -26,20 +28,29 @@ const formatTime = (timeInTenthsOfSeconds: number) => {
 
 // Computed properties for displaying time
 const player1DisplayTime = computed(() => {
+  if (player1OvertimeExpired.value) return '00:00'
   return formatTime(player1Time.value > 0 ? player1Time.value : player1Overtime.value)
 })
 
 const player2DisplayTime = computed(() => {
+  if (player2OvertimeExpired.value) return '00:00'
   return formatTime(player2Time.value > 0 ? player2Time.value : player2Overtime.value)
 })
 
 // Check if player is in overtime
-const player1InOvertime = computed(() => player1Time.value <= 0 && player1Overtime.value > 0)
-const player2InOvertime = computed(() => player2Time.value <= 0 && player2Overtime.value > 0)
+const player1InOvertime = computed(
+  () => (player1Time.value <= 0 && player1Overtime.value > 0) || player1OvertimeExpired.value,
+)
+
+const player2InOvertime = computed(
+  () => (player2Time.value <= 0 && player2Overtime.value > 0) || player2OvertimeExpired.value,
+)
 
 // Calculate penalty points based on remaining overtime
 // -10 points per minute of overtime used
-const calculatePenaltyPoints = (overtimeInTenths: number) => {
+const calculatePenaltyPoints = (overtimeInTenths: number, overtimeExpired: boolean) => {
+  if (overtimeExpired) return -80 // Maximum penalty when overtime is expired
+
   // Total overtime is 8 minutes (480 seconds or 4800 tenths)
   // Calculate how many full minutes of overtime have been used
   const totalOvertimeTenths = 8 * 60 * 10
@@ -53,12 +64,12 @@ const calculatePenaltyPoints = (overtimeInTenths: number) => {
 // Computed properties for penalty points
 const player1PenaltyPoints = computed(() => {
   if (!player1InOvertime.value) return 0
-  return calculatePenaltyPoints(player1Overtime.value)
+  return calculatePenaltyPoints(player1Overtime.value, player1OvertimeExpired.value)
 })
 
 const player2PenaltyPoints = computed(() => {
   if (!player2InOvertime.value) return 0
-  return calculatePenaltyPoints(player2Overtime.value)
+  return calculatePenaltyPoints(player2Overtime.value, player2OvertimeExpired.value)
 })
 
 // Start the timer for a player
@@ -75,7 +86,8 @@ const startTimer = (player: number) => {
         player1Time.value--
       } else if (player1Overtime.value > 0) {
         player1Overtime.value--
-      } else {
+      } else if (!player1OvertimeExpired.value) {
+        player1OvertimeExpired.value = true
         stopTimer()
       }
     } else if (player === 2) {
@@ -83,7 +95,8 @@ const startTimer = (player: number) => {
         player2Time.value--
       } else if (player2Overtime.value > 0) {
         player2Overtime.value--
-      } else {
+      } else if (!player2OvertimeExpired.value) {
+        player2OvertimeExpired.value = true
         stopTimer()
       }
     }
@@ -116,6 +129,8 @@ const resetTimer = () => {
   player2Time.value = 30 * 60 * 10
   player1Overtime.value = 8 * 60 * 10
   player2Overtime.value = 8 * 60 * 10
+  player1OvertimeExpired.value = false
+  player2OvertimeExpired.value = false
   showResetConfirmation.value = false
 }
 
@@ -178,6 +193,7 @@ const reduceTimeByOneMinute = (player: number, event: Event) => {
           active: activePlayer === 2,
           overtime: player2InOvertime,
           disabled: showResetConfirmation,
+          expired: player2OvertimeExpired,
         }"
         @click="handlePlayerClick(2)"
       >
@@ -204,6 +220,7 @@ const reduceTimeByOneMinute = (player: number, event: Event) => {
           active: activePlayer === 1,
           overtime: player1InOvertime,
           disabled: showResetConfirmation,
+          expired: player1OvertimeExpired,
         }"
         @click="handlePlayerClick(1)"
       >
@@ -311,6 +328,10 @@ h1 {
 .player-clock.disabled {
   pointer-events: none;
   opacity: 0.7;
+}
+
+.player-clock.overtime.expired {
+  background-color: #b26b00; /* Solid color for expired overtime */
 }
 
 .time {
