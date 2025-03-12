@@ -167,16 +167,10 @@ const cancelReset = () => {
 const handlePlayerClick = (player: number) => {
   // Don't allow player clicks when confirmation is showing
   if (showResetConfirmation.value) return
-
-  if (activePlayer.value === 0) {
-    // Start the timer for the clicked player
-    startTimer(player)
-  } else if (activePlayer.value === player) {
-    // Do nothing if the same player clicks again
-    return
-  } else {
-    // Switch to the other player
-    startTimer(player)
+  const opponent = player === 1 ? 2 : 1
+  if (activePlayer.value === 0 || activePlayer.value === player) {
+    // When a player clicks on their own clock, switch to the opponent
+    startTimer(opponent)
   }
 }
 
