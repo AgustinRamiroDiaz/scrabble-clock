@@ -4,6 +4,9 @@ import PauseIcon from './components/icons/pause-circle-svgrepo-com.svg'
 import InstallPrompt from './components/InstallPrompt.vue'
 import UpdateNotification from './components/UpdateNotification.vue'
 
+// Check if we're in development mode
+const isDevelopment = import.meta.env.MODE === 'development'
+
 // Player timer states (now in tenths of seconds)
 const player1Time = ref(30 * 60 * 10) // 30 minutes in tenths of seconds
 const player2Time = ref(30 * 60 * 10) // 30 minutes in tenths of seconds
@@ -113,6 +116,30 @@ const handlePlayerClick = (player: number) => {
     startTimer(player)
   }
 }
+
+// Debug function to reduce player time by 1 minute (only in development mode)
+const reduceTimeByOneMinute = (player: number, event: Event) => {
+  // Stop event propagation to prevent triggering the parent click handler
+  event.stopPropagation()
+
+  if (player === 1) {
+    if (player1Time.value > 0) {
+      // Reduce by 1 minute (600 tenths of seconds), but don't go below 0
+      player1Time.value = Math.max(0, player1Time.value - 600)
+    } else if (player1Overtime.value > 0) {
+      // If already in overtime, reduce overtime
+      player1Overtime.value = Math.max(0, player1Overtime.value - 600)
+    }
+  } else if (player === 2) {
+    if (player2Time.value > 0) {
+      // Reduce by 1 minute (600 tenths of seconds), but don't go below 0
+      player2Time.value = Math.max(0, player2Time.value - 600)
+    } else if (player2Overtime.value > 0) {
+      // If already in overtime, reduce overtime
+      player2Overtime.value = Math.max(0, player2Overtime.value - 600)
+    }
+  }
+}
 </script>
 
 <template>
@@ -132,6 +159,9 @@ const handlePlayerClick = (player: number) => {
       >
         <div class="time">{{ player2DisplayTime }}</div>
         <div v-if="player2InOvertime" class="overtime-indicator">OVERTIME</div>
+        <button v-if="isDevelopment" @click="(e) => reduceTimeByOneMinute(2, e)" class="debug-btn">
+          -1 min
+        </button>
       </div>
 
       <div class="controls">
@@ -152,6 +182,9 @@ const handlePlayerClick = (player: number) => {
       >
         <div class="time">{{ player1DisplayTime }}</div>
         <div v-if="player1InOvertime" class="overtime-indicator">OVERTIME</div>
+        <button v-if="isDevelopment" @click="(e) => reduceTimeByOneMinute(1, e)" class="debug-btn">
+          -1 min
+        </button>
       </div>
     </div>
 
@@ -222,6 +255,7 @@ h1 {
   justify-content: center;
   margin: 0;
   color: #e0e0e0;
+  position: relative; /* Add this to position the debug button */
 }
 
 /* Player 2 is upside down for face-to-face play */
@@ -412,5 +446,29 @@ h2 {
 
 .confirm-btn {
   background-color: #c62828;
+}
+
+.debug-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: #c62828;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+  z-index: 5;
+}
+
+.debug-btn:hover {
+  opacity: 1;
+}
+
+.player-2 .debug-btn {
+  transform: rotate(180deg); /* Rotate the button for player 2 */
 }
 </style>
