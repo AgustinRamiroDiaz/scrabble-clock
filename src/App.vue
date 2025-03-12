@@ -1,8 +1,16 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import PauseIcon from './components/icons/pause-circle-svgrepo-com.svg'
+import VolumeUpIcon from './components/icons/volume-up-svgrepo-com.svg'
+import VolumeMuteIcon from './components/icons/volume-mute-svgrepo-com.svg'
 import InstallPrompt from './components/InstallPrompt.vue'
 import UpdateNotification from './components/UpdateNotification.vue'
+import audioService from './services/AudioService'
+
+// Initialize audio service
+onMounted(() => {
+  audioService.init()
+})
 
 // Check if we're in development mode
 const isDevelopment = import.meta.env.MODE === 'development'
@@ -84,8 +92,16 @@ const startTimer = (player: number) => {
     if (player === 1) {
       if (player1Time.value > 0) {
         player1Time.value--
+        // Check if regular time just ended
+        if (player1Time.value === 0) {
+          audioService.playSound('regular-time-end')
+        }
       } else if (player1Overtime.value > 0) {
         player1Overtime.value--
+        // Check if overtime just ended
+        if (player1Overtime.value === 0) {
+          audioService.playSound('overtime-end')
+        }
       } else if (!player1OvertimeExpired.value) {
         player1OvertimeExpired.value = true
         stopTimer()
@@ -93,8 +109,16 @@ const startTimer = (player: number) => {
     } else if (player === 2) {
       if (player2Time.value > 0) {
         player2Time.value--
+        // Check if regular time just ended
+        if (player2Time.value === 0) {
+          audioService.playSound('regular-time-end')
+        }
       } else if (player2Overtime.value > 0) {
         player2Overtime.value--
+        // Check if overtime just ended
+        if (player2Overtime.value === 0) {
+          audioService.playSound('overtime-end')
+        }
       } else if (!player2OvertimeExpired.value) {
         player2OvertimeExpired.value = true
         stopTimer()
@@ -179,6 +203,11 @@ const reduceTimeByOneMinute = (player: number, event: Event) => {
     }
   }
 }
+
+// Toggle sound mute
+const toggleMute = () => {
+  audioService.toggleMute()
+}
 </script>
 
 <template>
@@ -211,6 +240,15 @@ const reduceTimeByOneMinute = (player: number, event: Event) => {
         <button @click="showResetConfirmationDialog" class="reset-btn">Reset</button>
         <button v-if="activePlayer !== 0" @click="stopTimer" class="pause-btn">
           <img :src="PauseIcon" alt="Pause" class="pause-icon" />
+        </button>
+        <button @click="toggleMute" class="sound-btn">
+          <img
+            v-if="audioService.isMuted.value"
+            :src="VolumeMuteIcon"
+            alt="Unmute"
+            class="sound-icon"
+          />
+          <img v-else :src="VolumeUpIcon" alt="Mute" class="sound-icon" />
         </button>
       </div>
 
@@ -460,6 +498,11 @@ h2 {
     width: 20px;
     height: 20px;
   }
+
+  .sound-icon {
+    width: 20px;
+    height: 20px;
+  }
 }
 
 /* Additional responsive adjustments for different screen sizes */
@@ -570,5 +613,15 @@ h2 {
 
 .confirm-btn {
   background-color: #c62828;
+}
+
+.sound-btn {
+  padding: 0.75rem;
+  aspect-ratio: 1/1;
+}
+
+.sound-icon {
+  width: 24px;
+  height: 24px;
 }
 </style>
