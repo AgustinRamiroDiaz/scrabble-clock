@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import PauseIcon from './components/icons/pause-circle-svgrepo-com.svg'
+import InstallPrompt from './components/InstallPrompt.vue'
+import UpdateNotification from './components/UpdateNotification.vue'
 
 // Player timer states (now in tenths of seconds)
 const player1Time = ref(30 * 60 * 10) // 30 minutes in tenths of seconds
@@ -115,6 +117,9 @@ const handlePlayerClick = (player: number) => {
 
 <template>
   <div class="scrabble-clock">
+    <!-- Update Notification -->
+    <UpdateNotification />
+
     <div class="clock-container">
       <div
         class="player-clock player-2"
@@ -161,6 +166,9 @@ const handlePlayerClick = (player: number) => {
         </div>
       </div>
     </div>
+
+    <!-- Install Prompt -->
+    <InstallPrompt />
   </div>
 </template>
 

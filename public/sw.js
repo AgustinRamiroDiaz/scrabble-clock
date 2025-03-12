@@ -11,12 +11,18 @@ const urlsToCache = [
 
 // Install a service worker
 self.addEventListener('install', event => {
+    console.log('Service Worker: Installing...');
+
+    // Skip waiting forces the waiting service worker to become the active service worker
+    self.skipWaiting();
+
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => {
-                console.log('Opened cache');
+                console.log('Service Worker: Caching files');
                 return cache.addAll(urlsToCache);
             })
+            .then(() => console.log('Service Worker: All files cached'))
     );
 });
 
@@ -58,16 +64,35 @@ self.addEventListener('fetch', event => {
 
 // Update a service worker
 self.addEventListener('activate', event => {
+    console.log('Service Worker: Activating...');
+
+    // Claim control immediately, rather than waiting for reload
+    event.waitUntil(self.clients.claim());
+
     const cacheWhitelist = [CACHE_NAME];
     event.waitUntil(
         caches.keys().then(cacheNames => {
             return Promise.all(
                 cacheNames.map(cacheName => {
                     if (cacheWhitelist.indexOf(cacheName) === -1) {
+                        console.log('Service Worker: Clearing old cache', cacheName);
                         return caches.delete(cacheName);
                     }
                 })
             );
         })
+            .then(() => {
+                console.log('Service Worker: Activated');
+
+                // Send a message to all clients that the service worker has been updated
+                self.clients.matchAll().then(clients => {
+                    clients.forEach(client => {
+                        client.postMessage({
+                            type: 'SW_UPDATED',
+                            message: 'New content is available. Please refresh to update.'
+                        });
+                    });
+                });
+            })
     );
 }); 
