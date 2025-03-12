@@ -6,6 +6,7 @@ Use it at https://agustinramirodiaz.github.io/scrabble-clock/
 
 - PWA
 - Isa's face as icon
+- Play sound when finishing clock
 - Configuration page
 
 ## Recommended IDE Setup

@@ -270,11 +270,12 @@ h1 {
   gap: 0.5rem;
   flex: 1;
   width: 100%;
+  max-height: 100vh;
 }
 
 .player-clock {
   width: 100%;
-  padding: 0.5rem 0;
+  padding: 0;
   border-radius: 0;
   background-color: #1e1e1e;
   cursor: pointer;
@@ -285,7 +286,7 @@ h1 {
   justify-content: center;
   margin: 0;
   color: #e0e0e0;
-  position: relative; /* Add this to position the debug button */
+  position: relative;
 }
 
 /* Player 2 is upside down for face-to-face play */
@@ -313,13 +314,13 @@ h1 {
 }
 
 .time {
-  font-size: 8vw;
+  font-size: 20vw; /* Much larger font size */
   font-weight: bold;
   margin: 0;
   line-height: 1;
   width: 100%;
   text-align: center;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.05em; /* Tighter letter spacing */
 }
 
 .controls {
@@ -330,6 +331,7 @@ h1 {
   width: 100%;
   z-index: 10;
   background-color: #212121;
+  min-height: 60px; /* Ensure controls have a minimum height */
 }
 
 button {
@@ -370,26 +372,28 @@ button:hover {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  margin: 0.25rem 0;
+  margin: 0.5rem 0;
+  width: 100%;
 }
 
 .overtime-indicator {
   font-weight: bold;
   color: white;
   background-color: rgba(255, 255, 255, 0.15);
-  padding: 0.25rem 0.5rem;
+  padding: 0.5rem 0.75rem;
   border-radius: 4px;
   display: inline-block;
+  font-size: 1.2rem;
 }
 
 .penalty-indicator {
   font-weight: bold;
   color: #ff6b6b;
   background-color: rgba(255, 255, 255, 0.1);
-  padding: 0.25rem 0.5rem;
+  padding: 0.5rem 0.75rem;
   border-radius: 4px;
   display: inline-block;
-  font-size: 0.9rem;
+  font-size: 1.2rem;
 }
 
 h2 {
@@ -410,11 +414,17 @@ h2 {
   }
 
   .player-clock {
-    padding: 0.5rem;
+    padding: 0;
   }
 
   .time {
-    font-size: 12vw;
+    font-size: 18vw;
+  }
+
+  .overtime-indicator,
+  .penalty-indicator {
+    font-size: 1rem;
+    padding: 0.3rem 0.5rem;
   }
 
   button {
@@ -434,20 +444,65 @@ h2 {
 /* Additional responsive adjustments for different screen sizes */
 @media (min-height: 601px) and (max-height: 800px) {
   .time {
-    font-size: 14vw;
+    font-size: 22vw;
   }
 }
 
 @media (min-height: 801px) {
   .time {
-    font-size: 16vw;
+    font-size: 24vw;
   }
 }
 
 @media (orientation: landscape) {
   .time {
-    font-size: 16vh;
+    font-size: 20vh;
   }
+
+  .clock-container {
+    flex-direction: row;
+    height: 100vh;
+  }
+
+  .player-clock {
+    height: 100%;
+  }
+
+  .player-clock.player-2 {
+    transform: none;
+  }
+
+  .controls {
+    flex-direction: column;
+    height: 100%;
+    width: auto;
+    min-width: 80px;
+  }
+}
+
+/* Debug button adjustments */
+.debug-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: #c62828;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+  z-index: 5;
+}
+
+.debug-btn:hover {
+  opacity: 1;
+}
+
+.player-2 .debug-btn {
+  transform: rotate(180deg); /* Rotate the button for player 2 */
 }
 
 .modal-overlay {
@@ -494,29 +549,5 @@ h2 {
 
 .confirm-btn {
   background-color: #c62828;
-}
-
-.debug-btn {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  background-color: #c62828;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 0.5rem;
-  font-size: 0.8rem;
-  cursor: pointer;
-  opacity: 0.7;
-  transition: opacity 0.3s;
-  z-index: 5;
-}
-
-.debug-btn:hover {
-  opacity: 1;
-}
-
-.player-2 .debug-btn {
-  transform: rotate(180deg); /* Rotate the button for player 2 */
 }
 </style>
