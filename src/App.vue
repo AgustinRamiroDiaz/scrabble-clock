@@ -270,7 +270,7 @@ h1 {
 }
 
 .player-clock.overtime {
-  background-color: #e65100;
+  background-color: #b26b0055;
 }
 
 .player-clock.active.overtime {
