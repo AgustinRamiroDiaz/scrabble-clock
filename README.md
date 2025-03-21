@@ -8,6 +8,7 @@ Use it at https://agustinramirodiaz.github.io/scrabble-clock/
 - Isa's face as icon
 - Play sound when finishing clock
 - Configuration page
+- stop when clock hits 0
 
 ## Recommended IDE Setup
 

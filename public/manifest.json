@@ -2,7 +2,7 @@
   "name": "Scrabble Clock",
   "short_name": "ScrabbleClock",
   "description": "A simple timer for Scrabble games with overtime support",
-  "start_url": "/",
+  "start_url": "/scrabble-clock",
   "display": "standalone",
   "background_color": "#121212",
   "theme_color": "#212121",
