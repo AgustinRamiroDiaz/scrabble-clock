@@ -17,6 +17,9 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       devOptions: { enabled: process.env.NODE_ENV === 'development' },
+      pwaAssets: {
+        disabled: false,
+      },
     }),
   ],
   resolve: {
