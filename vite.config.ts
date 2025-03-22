@@ -19,6 +19,7 @@ export default defineConfig({
       devOptions: { enabled: process.env.NODE_ENV === 'development' },
       pwaAssets: {
         disabled: false,
+        image: 'public/isa.jpeg',
       },
     }),
   ],
